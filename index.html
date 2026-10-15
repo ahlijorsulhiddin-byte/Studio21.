@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MINI PHOTO STUDIO</title>
+<style>
+:root{--bg:#0a0612;--g:#1b1230;--p:#a259ff;--c:#2ee6c5;--k:#ff8a5c;--t:#fbf7ff;--b:rgba(255,255,255,.14);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme=light]{--bg:#eef0fb;--g:#fff;--t:#14182b;--b:rgba(20,24,43,.15)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(800px 500px at 10% -5%,rgba(162,89,255,.45),transparent),radial-gradient(700px 450px at 95% 10%,rgba(255,138,92,.25),transparent),radial-gradient(600px 400px at 50% 110%,rgba(46,230,197,.22),transparent),var(--bg);color:var(--t);font:15px Inter,system-ui,sans-serif;min-height:100vh}
+h1,h2,h3,.logo{font-family:"Space Grotesk",Inter,sans-serif;margin:0}
+nav{display:flex;gap:6px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--b);background:color-mix(in srgb,var(--g) 70%,transparent);backdrop-filter:blur(12px);flex-wrap:wrap;position:sticky;top:0;z-index:5}
+.logo{font-weight:700;margin-right:auto;display:flex;gap:8px;align-items:center}
+button,select,input[type=text]{font:inherit;color:var(--t);background:var(--g);border:1px solid var(--b);border-radius:10px;padding:8px 12px;min-height:40px}
+button{cursor:pointer;transition:.2s;border-radius:999px}button:hover{border-color:var(--c);transform:translateY(-1px)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+button.on,.go{background:linear-gradient(135deg,var(--p),var(--k));border-color:transparent;color:#fff;box-shadow:0 0 18px rgba(162,89,255,.55)}
+main{max-width:1200px;margin:0 auto;padding:16px}
+section{display:none;animation:in .35s}section.show{display:block}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.hero{text-align:center;padding:40px 0 20px}.hero h1{font-size:clamp(32px,7vw,60px);background:linear-gradient(90deg,var(--c),var(--p),var(--k));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:20px}
+.card,.panel{background:color-mix(in srgb,var(--g) 80%,transparent);border:1px solid var(--b);border-radius:24px;padding:16px;backdrop-filter:blur(10px)}
+.card{text-align:left;cursor:pointer;transition:.25s}.card:hover{transform:translateY(-4px);border-color:var(--c);box-shadow:0 12px 40px rgba(162,89,255,.3)}.card .i{font-size:34px}
+.ed{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px}
+@media(max-width:800px){.ed{grid-template-columns:1fr}}
+.stage{display:grid;place-items:center;min-height:280px;background:repeating-conic-gradient(#0003 0 25%,#0000 0 50%) 0 0/16px 16px;border-radius:16px;border:1px solid var(--b);padding:8px;overflow:hidden}
+canvas{max-width:100%;max-height:70vh;border-radius:8px;touch-action:none}
+label{display:grid;gap:2px;font-size:13px;margin:6px 0}input[type=range]{width:100%;accent-color:var(--p)}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.row>*{flex:1 1 auto}
+small{opacity:.7}
+input[type=file]{width:100%;padding:14px;border:2px dashed var(--c);border-radius:20px;background:color-mix(in srgb,var(--c) 8%,transparent);color:var(--t);cursor:pointer;font-weight:600;min-height:76px;transition:.2s}
+input[type=file]:hover{background:color-mix(in srgb,var(--c) 18%,transparent);box-shadow:0 0 26px color-mix(in srgb,var(--c) 45%,transparent)}
+input[type=file]::file-selector-button{margin-right:14px;padding:14px 24px;border:0;border-radius:999px;background:linear-gradient(135deg,var(--p),var(--k));color:#fff;font:700 16px Inter,sans-serif;cursor:pointer;box-shadow:0 0 18px rgba(162,89,255,.55)}
+#vtl{display:grid;gap:8px;margin-top:10px}
+.trk{position:relative;display:flex;height:60px;border-radius:12px;overflow:hidden;background:#0006;border:1px solid var(--b)}
+.sc{position:relative;height:100%;cursor:pointer;overflow:hidden;box-shadow:inset -2px 0 #000a;min-width:12px}.sc.act{outline:3px solid var(--k);outline-offset:-3px}
+.sc span{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:12px;color:#fff;text-shadow:0 1px 3px #000;pointer-events:none;white-space:nowrap}
+.hd{position:absolute;top:0;bottom:0;left:0;width:12px;background:rgba(255,255,255,.85);cursor:ew-resize;touch-action:none;z-index:2}.hd.r{left:auto;right:0}
+.ph{position:absolute;top:0;bottom:0;width:3px;background:#fff;box-shadow:0 0 8px var(--k);pointer-events:none;z-index:3}
+#pe{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}#pe button{font-size:20px;padding:4px;min-height:38px;border-radius:12px}
+#gl{position:fixed;left:0;top:0;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(46,230,197,.3),rgba(162,89,255,.15) 45%,transparent 70%);mix-blend-mode:screen;opacity:0;transition:opacity .3s;z-index:9}
+:root[data-theme=light] #gl{mix-blend-mode:normal}
+@media(hover:none){#gl{display:none}}#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--g);border:1px solid var(--c);padding:10px 16px;border-radius:12px;opacity:0;transition:.3s;pointer-events:none;z-index:9}#toast.s{opacity:1}
+</style></head><body>
+<div id="gl"></div><nav><div class="logo"><svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="#7657FF" stroke-width="2"/><path d="M16 2l6 10H10zM28 12l-9 5 3 -10zM24 27l-3-10 9 1zM8 27l8-7 1 10zM2 14l9-2-2 10z" fill="#21C8F6" opacity=".8"/></svg>MINI PHOTO STUDIO</div>
+<button data-t="home" class="on">Главная</button><button data-t="photo">Фото</button><button data-t="video">Видео</button><button data-t="ava">Аватарки</button><button id="th" aria-label="Тема">🌓</button></nav>
+<main>
+<section id="home" class="show"><div class="hero"><h1>Твори без границ.</h1><p>Фото, видео, мемы и аватарки в одном приложении. Всё обрабатывается локально в браузере.</p><button class="go" data-t="photo">Начать редактирование</button></div>
+<div class="cards"><div class="card" data-t="photo" tabindex="0" role="button"><div class="i">🖼️</div><h3>Фоторедактор</h3><small>Фильтры, эмодзи, кадр, поворот, PNG/JPG</small></div>
+<div class="card" data-t="video" tabindex="0" role="button"><div class="i">🎬</div><h3>Видеоредактор</h3><small>Сцены: разделить, удалить, обрезать, WebM</small></div>
+<div class="card" data-t="ava" tabindex="0" role="button"><div class="i">👤</div><h3>Редактор аватарок</h3><small>Формы, фон, рамка, 128–1024 px</small></div></div><h2 style="margin:36px 0 4px">Мои проекты</h2><small>Сохраняются в этом браузере</small><div class="cards" id="pj"></div></section>
+
+<section id="photo"><div class="ed"><div><div class="stage"><canvas id="pc" width="600" height="400"></canvas></div><div class="row"><button id="pu">↶ Отмена</button><button id="pr">↷ Повтор</button><button id="pba">Держи: До</button><button id="pre">Сброс</button></div></div>
+<div class="panel"><div class="row"><input type="file" id="pf" accept="image/png,image/jpeg,image/webp" aria-label="Загрузить фото"></div><button id="pm" style="width:100%">✨ Magic Enhance</button>
+<div id="ps"></div>
+<label>Фильтр<select id="pp"></select></label>
+<label>Формат<select id="pra"><option value="0">Оригинал</option><option value="1">1:1</option><option value="2">4:5</option><option value="3">16:9</option><option value="4">9:16</option></select></label>
+<div class="row"><button id="prl">⟳ 90°</button><button id="pfx">⇋</button><button id="pfy">⇅</button></div>
+<small>Эмодзи: клик — добавить, тяните по фото</small><div id="pe" role="group" aria-label="Эмодзи"></div><label>Размер эмодзи<input type="range" id="pes" min="5" max="50" value="15"></label><div class="row"><button id="ped">🗑 Удалить эмодзи</button></div><label>Текст<input type="text" id="ptx" placeholder="Подпись"></label>
+<div class="row"><select id="pfm"><option value="image/png">PNG</option><option value="image/jpeg">JPG</option></select><button class="go" id="pex">Экспорт</button></div><div class="row"><button id="psv">💾 Сохранить проект</button></div><small id="pi"></small></div></div></section>
+
+<section id="video"><div class="ed"><div><div class="stage"><canvas id="vc" width="640" height="360"></canvas></div><video id="vv" playsinline hidden></video><div id="vtl"></div>
+<div class="row"><button id="vpl">▶/⏸</button><input type="range" id="vs" min="0" max="1000" value="0" aria-label="Перемотка" style="flex:5"><span id="vt">0:00</span></div></div>
+<div class="panel"><input type="file" id="vf" accept="video/*" multiple aria-label="Выбрать видео (до 4, можно сразу 2)">
+<div class="row"><button id="vsp2">✂ Разделить (S)</button><button id="vde">🗑 Удалить сцену</button><button id="vun">↶ Отмена</button></div><div class="row"><button id="vfb">◀ кадр</button><button id="vff">кадр ▶</button></div><label>Фильтр<select id="vfl"><option value="">Original</option><option>grayscale(1)</option><option>sepia(.8)</option><option>hue-rotate(-30deg) saturate(2) contrast(1.2)</option><option>contrast(1.2) saturate(.9) brightness(.9)</option><option>blur(2px)</option><option>saturate(1.6)</option></select></label>
+<label>Скорость <span id="vsp">1×</span><input type="range" id="vspd" min=".25" max="3" step=".25" value="1"></label>
+<div class="row"><button id="vi">Начало = тут</button><button id="vo">Конец = тут</button></div><small id="vtr">Клик по сцене — выбрать, края — обрезка, S — разделить, Del — удалить</small>
+<label>Громкость<input type="range" id="vvol" min="0" max="1" step=".05" value="1"></label><label>Текст<input type="text" id="vtx" placeholder="Заголовок / субтитр"></label>
+<div class="row"><button class="go" id="vex">Экспорт WebM</button><button id="vsv">💾 Сохранить проект</button></div><small id="vst">Загрузите видео. Звук записывается в реальном времени.</small></div></div></section>
+
+
+<section id="ava"><div class="ed"><div><div class="stage"><canvas id="ac" width="320" height="320"></canvas></div><small>Перетаскивайте фото на холсте.</small></div>
+<div class="panel"><input type="file" id="af" accept="image/*"><label>Форма<select id="ash"><option value="c">Круг</option><option value="r">Скруглённый</option><option value="s">Квадрат</option></select></label>
+<label>Масштаб<input type="range" id="az" min="50" max="300" value="100"></label><label>Поворот<input type="range" id="ar" min="-180" max="180" value="0"></label>
+<label>Фон<input type="color" id="abg" value="#151E32"></label><label>Цвет рамки<input type="color" id="abc" value="#21C8F6"></label><label>Толщина рамки<input type="range" id="abw" min="0" max="40" value="10"></label>
+<div class="row"><button id="arc">Центр</button><select id="asz"><option>128</option><option>256</option><option selected>512</option><option>1024</option></select><select id="afm"><option value="image/png">PNG</option><option value="image/jpeg">JPG</option></select><button class="go" id="aex">Экспорт</button><button id="asv">💾 Проект</button></div></div></div></section>
+</main><div id="toast" role="status"></div>
+<script>
+const $=s=>document.querySelector(s),toast=m=>{const t=$('#toast');t.textContent=m;t.className='s';clearTimeout(t._);t._=setTimeout(()=>t.className='',2200)};
+function go(t){document.querySelectorAll('section').forEach(s=>s.classList.toggle('show',s.id==t));document.querySelectorAll('nav [data-t]').forEach(b=>b.classList.toggle('on',b.dataset.t==t));if(t!='video')$('#vv').pause();if(t=='home'&&window.rp)rp()}
+document.querySelectorAll('[data-t]').forEach(e=>{e.onclick=()=>go(e.dataset.t);e.onkeydown=ev=>{if(ev.key=='Enter')go(e.dataset.t)}});
+const root=document.documentElement;try{root.dataset.theme=localStorage.th||'dark'}catch(e){}
+$('#th').onclick=()=>{root.dataset.theme=root.dataset.theme=='light'?'dark':'light';try{localStorage.th=root.dataset.theme}catch(e){}};
+function load(file,cb){if(!file||!file.type.startsWith('image/'))return toast('Нужен файл изображения');if(file.size>30e6)return toast('Файл больше 30 МБ');const i=new Image(),u=URL.createObjectURL(file);i.onload=()=>{cb(i,file);URL.revokeObjectURL(u)};i.onerror=()=>toast('Не удалось прочитать изображение');i.src=u}
+function save(cv,type,name){cv.toBlob(b=>{if(!b)return toast('Ошибка экспорта');const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name+(type=='image/png'?'.png':'.jpg');a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1e3);toast('Файл сохранён: '+cv.width+'×'+cv.height)},type,.92)}
+/* PHOTO */
+const NAMES=['Original','Grayscale','Black & White','Vintage','Sepia','Cyberpunk Neon','Cinema','Warm','Cool','Dreamy','Gaming','Soft Colors'];
+const PRE=['','grayscale(1)','grayscale(1) contrast(1.5)','sepia(.5) contrast(1.1) brightness(.95)','sepia(1)','hue-rotate(-30deg) saturate(2) contrast(1.2)','contrast(1.2) saturate(.9) brightness(.9)','sepia(.3) saturate(1.3)','hue-rotate(180deg) saturate(.9)','blur(1px) brightness(1.1) saturate(1.2)','saturate(1.5) contrast(1.15)','saturate(.7) brightness(1.1)'];
+const SL=[['b','Яркость',50,150],['c','Контраст',50,150],['s','Насыщенность',0,200],['h','Оттенок',-180,180],['bl','Размытие',0,10]];
+const P0={b:100,c:100,s:100,h:0,bl:0,pre:0,rot:0,fx:1,fy:1,ra:0,tx:'',e:[]};let sel=-1;
+let img=null,P={...P0},hist=[],fut=[],cur=JSON.stringify(P),orig=false;
+$('#pp').innerHTML=NAMES.map((n,i)=>`<option value="${i}">${n}</option>`).join('');
+$('#ps').innerHTML=SL.map(([k,n,a,b])=>`<label>${n}<input type="range" data-k="${k}" min="${a}" max="${b}" value="${P0[k]}"></label>`).join('');
+function commit(){hist.push(cur);cur=JSON.stringify(P);fut=[];if(hist.length>60)hist.shift()}
+function sync(){document.querySelectorAll('#ps input').forEach(i=>i.value=P[i.dataset.k]);$('#pp').value=P.pre;$('#pra').value=P.ra;$('#ptx').value=P.tx;drawP($('#pc'),1200)}
+function drawP(cv,max,raw,ex){if(!img)return;let w=img.naturalWidth,h=img.naturalHeight,r=[0,1,4/5,16/9,9/16][P.ra],sw=w,sh=h;if(r){if(w/h>r){sw=h*r}else{sh=w/r}}
+const sx=(w-sw)/2,sy=(h-sh)/2,o=P.rot%2,ow=o?sh:sw,oh=o?sw:sh,k=Math.min(1,max/Math.max(ow,oh));cv.width=Math.round(ow*k);cv.height=Math.round(oh*k);
+const x=cv.getContext('2d');x.save();x.translate(cv.width/2,cv.height/2);x.rotate(P.rot*Math.PI/2);x.scale(P.fx,P.fy);
+x.filter=raw?'none':`brightness(${P.b}%) contrast(${P.c}%) saturate(${P.s}%) hue-rotate(${P.h}deg) blur(${P.bl*k}px) ${PRE[P.pre]}`;
+x.drawImage(img,sx,sy,sw,sh,-sw*k/2,-sh*k/2,sw*k,sh*k);x.restore();
+if(P.tx&&!raw){x.font=`bold ${cv.height/10}px Inter,sans-serif`;x.textAlign='center';x.lineWidth=cv.height/50;x.strokeStyle='#000';x.fillStyle='#fff';x.strokeText(P.tx,cv.width/2,cv.height*.92,cv.width*.9);x.fillText(P.tx,cv.width/2,cv.height*.92,cv.width*.9)}
+if(!raw)P.e.forEach((m,i)=>{const z=m.s*cv.height;x.font=z+'px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(m.e,m.x*cv.width,m.y*cv.height);if(i==sel&&!ex){x.strokeStyle='#2ee6c5';x.lineWidth=2;x.setLineDash([6,4]);x.strokeRect(m.x*cv.width-z*.65,m.y*cv.height-z*.65,z*1.3,z*1.3);x.setLineDash([])}});$('#pi').textContent=`Оригинал ${w}×${h} → результат ${Math.round(ow)}×${Math.round(oh)}`}
+const need=()=>img||(toast('Сначала загрузите фото'),0);
+$('#pf').onchange=e=>load(e.target.files[0],(i,f)=>{img=i;pF=f;ID.photo=0;P={...P0};hist=[];fut=[];cur=JSON.stringify(P);sync()});
+$('#ps').oninput=e=>{P[e.target.dataset.k]=+e.target.value;drawP($('#pc'),1200)};$('#ps').onchange=()=>commit();
+$('#pp').onchange=e=>{P.pre=+e.target.value;commit();sync()};$('#pra').onchange=e=>{P.ra=+e.target.value;commit();sync()};
+$('#ptx').oninput=e=>{P.tx=e.target.value;drawP($('#pc'),1200)};$('#ptx').onchange=commit;
+$('#prl').onclick=()=>{if(need()){P.rot=(P.rot+1)%4;commit();sync()}};$('#pfx').onclick=()=>{if(need()){P.fx*=-1;commit();sync()}};$('#pfy').onclick=()=>{if(need()){P.fy*=-1;commit();sync()}};
+$('#pm').onclick=()=>{if(need()){Object.assign(P,{b:108,c:112,s:118,pre:0});commit();sync();toast('Magic Enhance: яркость, контраст и насыщенность скорректированы')}};
+$('#pre').onclick=()=>{if(need()){P={...P0};commit();sync()}};
+function undo(){if(!hist.length)return;fut.push(cur);cur=hist.pop();P=JSON.parse(cur);sync()}function redo(){if(!fut.length)return;hist.push(cur);cur=fut.pop();P=JSON.parse(cur);sync()}
+$('#pu').onclick=undo;$('#pr').onclick=redo;
+const ba=$('#pba');ba.onpointerdown=()=>drawP($('#pc'),1200,1);ba.onpointerup=ba.onpointerleave=()=>drawP($('#pc'),1200);
+$('#pex').onclick=()=>{if(!need())return;const c=document.createElement('canvas');drawP(c,8000,0,1);save(c,$('#pfm').value,'photo-'+Date.now())};
+addEventListener('keydown',e=>{if(/INPUT|SELECT/.test(e.target.tagName)&&e.target.type!='range')return;const m=e.ctrlKey||e.metaKey;if(m&&e.key=='z'&&$('#photo').classList.contains('show')){e.preventDefault();undo()}if(m&&e.key=='y'&&$('#photo').classList.contains('show')){e.preventDefault();redo()}if(m&&e.key=='s'){e.preventDefault();saveCur()}});
+$('#pc').getContext('2d').fillStyle='#889';$('#pc').getContext('2d').fillText('Загрузите фото →',240,200);
+/* EMOJI + GLOW */
+const EM=['😀','😂','😍','😎','🔥','💀','❤️','⭐','👍','🎉','✨','🌈'];
+$('#pe').innerHTML=EM.map(m=>`<button type="button" aria-label="Эмодзи ${m}">${m}</button>`).join('');
+$('#pe').onclick=e=>{const b=e.target.closest('button');if(!b||!need())return;P.e=[...P.e,{e:b.textContent,x:.5,y:.5,s:.15}];sel=P.e.length-1;$('#pes').value=15;commit();drawP($('#pc'),1200)};
+$('#pes').oninput=e=>{if(P.e[sel]){P.e[sel].s=e.target.value/100;drawP($('#pc'),1200)}};$('#pes').onchange=commit;
+$('#ped').onclick=()=>{if(P.e[sel]){P.e=P.e.filter((_,i)=>i!=sel);sel=-1;commit();drawP($('#pc'),1200)}else toast('Выберите эмодзи кликом по нему')};
+let pd=null;const pcv=$('#pc');
+pcv.onpointerdown=e=>{if(!img)return;const r=pcv.getBoundingClientRect(),px=(e.clientX-r.left)/r.width,py=(e.clientY-r.top)/r.height;sel=-1;for(let i=P.e.length-1;i>=0;i--){const s=P.e[i];if(Math.hypot((px-s.x)*r.width,(py-s.y)*r.height)<s.s*r.height*.6){sel=i;pd=[px,py,s.x,s.y];pcv.setPointerCapture(e.pointerId);$('#pes').value=s.s*100;break}}drawP(pcv,1200)};
+pcv.onpointermove=e=>{if(!pd)return;const r=pcv.getBoundingClientRect(),s=P.e[sel];s.x=pd[2]+(e.clientX-r.left)/r.width-pd[0];s.y=pd[3]+(e.clientY-r.top)/r.height-pd[1];drawP(pcv,1200)};
+pcv.onpointerup=()=>{if(pd){pd=null;commit()}};
+const gl=$('#gl');addEventListener('pointermove',e=>{gl.style.opacity=1;gl.style.transform=`translate(${e.clientX}px,${e.clientY}px)`});document.addEventListener('pointerleave',()=>gl.style.opacity=0);
+/* AVATAR */
+let A={img:null,x:0,y:0};
+function drawA(cv,S,jpg){cv.width=cv.height=S;const x=cv.getContext('2d'),bw=+$('#abw').value*S/320,sh=$('#ash').value,R=sh=='c'?S/2:sh=='r'?S*.2:0;
+const path=()=>{x.beginPath();x.roundRect(bw/2,bw/2,S-bw,S-bw,Math.max(0,R-bw/2))};
+if(jpg){x.fillStyle='#fff';x.fillRect(0,0,S,S)}
+x.save();x.beginPath();x.roundRect(0,0,S,S,R);x.clip();x.fillStyle=$('#abg').value;x.fillRect(0,0,S,S);
+if(A.img){const a=Math.max(S/A.img.width,S/A.img.height)*$('#az').value/100;x.translate(S/2+A.x*S,S/2+A.y*S);x.rotate($('#ar').value*Math.PI/180);x.drawImage(A.img,-A.img.width*a/2,-A.img.height*a/2,A.img.width*a,A.img.height*a)}x.restore();
+if(bw){x.lineWidth=bw;x.strokeStyle=$('#abc').value;x.shadowColor=$('#abc').value;x.shadowBlur=bw;path();x.stroke()}}
+const ra=()=>drawA($('#ac'),320);['ash','az','ar','abg','abc','abw'].forEach(i=>$('#'+i).oninput=ra);
+$('#af').onchange=e=>load(e.target.files[0],(i,f)=>{A.img=i;aF=f;ID.ava=0;A.x=A.y=0;ra()});$('#arc').onclick=()=>{A.x=A.y=0;ra()};
+let dg=null;const ac=$('#ac');ac.onpointerdown=e=>{dg=[e.clientX,e.clientY,A.x,A.y];ac.setPointerCapture(e.pointerId)};ac.onpointermove=e=>{if(!dg)return;const r=ac.getBoundingClientRect();A.x=dg[2]+(e.clientX-dg[0])/r.width;A.y=dg[3]+(e.clientY-dg[1])/r.height;ra()};ac.onpointerup=()=>dg=null;
+$('#aex').onclick=()=>{if(!A.img)return toast('Сначала загрузите фото');const c=document.createElement('canvas'),f=$('#afm').value;drawA(c,+$('#asz').value,f=='image/jpeg');save(c,f,'avatar-'+$('#asz').value)};ra();
+/* VIDEO */
+const V=$('#vv'),vc=$('#vc'),vx=vc.getContext('2d');let clips=[],ci=0,vd=null,exp=false,ax,dst,vh=[];
+const fmt=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'),TT=()=>clips.reduce((s,c)=>s+c.b-c.a,0)||1,vsn=()=>{vh.push(clips.map(c=>({...c})));if(vh.length>40)vh.shift()};
+function aud(){if(!ax){ax=new AudioContext();const s=ax.createMediaElementSource(V);dst=ax.createMediaStreamDestination();s.connect(dst);s.connect(ax.destination)}if(ax.state=='suspended')ax.resume();return dst.stream.getAudioTracks()}
+function rl(){const T=TT();$('#vtl').innerHTML=clips.length?`<div class="trk">${clips.map((c,i)=>`<div class="sc${i==ci?' act':''}" data-i="${i}" style="width:${(c.b-c.a)/T*100}%;background:hsl(${c.k*70+260},55%,42%)"><i class="hd" data-h="a"></i><i class="hd r" data-h="b"></i><span>${i+1} · ${fmt(c.b-c.a)}</span></div>`).join('')}<i class="ph"></i></div>`:'<small>Нет сцен. Выберите видео.</small>'}
+function pick(i,pl,cb){ci=i;const c=clips[i];rl();const g=()=>{V.playbackRate=+$('#vspd').value;if(cb){let f=0;const r=()=>{if(!f){f=1;V.onseeked=null;cb()}};V.onseeked=r;setTimeout(r,500)}V.currentTime=c.a;if(pl)V.play()};if(V.src==c.u&&V.readyState>0)g();else{V.src=c.u;V.onloadedmetadata=g}V.onerror=()=>toast('Браузер не смог декодировать видео')}
+function drawV(){const c=clips[ci];if(c&&V.videoWidth){if(ci==0&&!exp&&vc.width!=V.videoWidth){vc.width=V.videoWidth;vc.height=V.videoHeight}
+const s=Math.min(vc.width/V.videoWidth,vc.height/V.videoHeight),dw=V.videoWidth*s,dh=V.videoHeight*s;vx.fillStyle='#000';vx.fillRect(0,0,vc.width,vc.height);vx.filter=$('#vfl').value||'none';vx.drawImage(V,(vc.width-dw)/2,(vc.height-dh)/2,dw,dh);vx.filter='none';
+const t=$('#vtx').value;if(t){vx.font=`bold ${vc.height/12}px Inter,sans-serif`;vx.textAlign='center';vx.lineWidth=vc.height/60;vx.strokeStyle='#000';vx.fillStyle='#fff';vx.strokeText(t,vc.width/2,vc.height*.9,vc.width*.9);vx.fillText(t,vc.width/2,vc.height*.9,vc.width*.9)}
+if(V.ended||(!V.paused&&V.currentTime>=c.b-.03)){if(ci<clips.length-1)pick(ci+1,1);else{V.pause();if(exp&&exp.state=='recording')exp.stop()}}
+$('#vt').textContent=`${ci+1}/${clips.length} · ${fmt(V.currentTime)} · итого ${fmt(TT())}`;if(document.activeElement!=$('#vs'))$('#vs').value=(V.currentTime-c.a)/(c.b-c.a)*1000;const ph=document.querySelector('.ph');if(ph)ph.style.left=(clips.slice(0,ci).reduce((s,q)=>s+q.b-q.a,0)+Math.max(0,V.currentTime-c.a))/TT()*100+'%'}requestAnimationFrame(drawV)}drawV();
+$('#vf').onchange=async e=>{const fs=[...e.target.files].filter(f=>f.type.startsWith('video/')).slice(0,8);e.target.value='';if(!fs.length)return toast('Нужен видеофайл');const had=clips.length;let k=clips.reduce((m,c)=>Math.max(m,c.k+1),0),n=0;
+for(const f of fs){const u=URL.createObjectURL(f),t=document.createElement('video');t.preload='metadata';t.src=u;await new Promise(r=>{t.onloadedmetadata=r;t.onerror=r});if(t.duration&&isFinite(t.duration)){clips.push({u,f,n:f.name,d:t.duration,a:0,b:t.duration,k:k++});n++}else URL.revokeObjectURL(u)}
+if(!n)return toast('Браузер не смог декодировать видео');if(!had){ID.video=0;pick(0)}else rl();toast('Добавлено сцен: '+n)};
+$('#vpl').onclick=()=>{if(!clips.length)return toast('Сначала загрузите видео');if(V.paused){const c=clips[ci];if(V.ended||V.currentTime>=c.b-.05){if(ci)return pick(0,1);V.currentTime=c.a}V.play()}else V.pause()};
+$('#vs').oninput=e=>{const c=clips[ci];if(c)V.currentTime=c.a+e.target.value/1000*(c.b-c.a)};
+$('#vspd').oninput=e=>{V.playbackRate=+e.target.value;$('#vsp').textContent=e.target.value+'×'};$('#vvol').oninput=e=>V.volume=+e.target.value;
+$('#vi').onclick=()=>{const c=clips[ci];if(c){vsn();c.a=Math.min(V.currentTime,c.b-.1);rl()}};$('#vo').onclick=()=>{const c=clips[ci];if(c){vsn();c.b=Math.max(V.currentTime,c.a+.1);rl()}};
+function split(){const c=clips[ci],t=V.currentTime;if(!c||t<c.a+.2||t>c.b-.2)return toast('Поставьте маркер внутри сцены');vsn();clips.splice(ci+1,0,{...c,a:t});c.b=t;rl();toast('Сцена разделена')}
+function delSc(){if(!clips.length)return;vsn();clips.splice(ci,1);if(!clips.length){V.pause();V.removeAttribute('src');ci=0;rl();return toast('Все сцены удалены')}pick(Math.min(ci,clips.length-1));toast('Сцена удалена')}
+const st=d=>{const c=clips[ci];if(c){V.pause();V.currentTime=Math.min(c.b,Math.max(c.a,V.currentTime+d/30))}};
+$('#vsp2').onclick=split;$('#vde').onclick=delSc;$('#vfb').onclick=()=>st(-1);$('#vff').onclick=()=>st(1);
+$('#vun').onclick=()=>{if(!vh.length)return toast('Нечего отменять');clips=vh.pop();ci=Math.min(ci,clips.length-1);if(clips.length)pick(ci);else{V.removeAttribute('src');rl()}};
+addEventListener('keydown',e=>{if(!$('#video').classList.contains('show')||/INPUT|SELECT/.test(e.target.tagName)||e.ctrlKey||e.metaKey)return;const k=e.key;if(k=='Delete'||k=='Backspace')delSc();else if(k=='s'||k=='S')split();else if(k==' '){e.preventDefault();$('#vpl').click()}else if(k=='ArrowLeft')st(-1);else if(k=='ArrowRight')st(1)});
+$('#vtl').onpointerdown=e=>{const t=e.target.closest('.sc');if(!t)return;const i=+t.dataset.i,h=e.target.dataset.h,c=clips[i];if(!h){if(i!=ci)pick(i);else{const q=t.getBoundingClientRect();V.currentTime=c.a+(e.clientX-q.left)/q.width*(c.b-c.a)}return}vsn();vd={i,h,x:e.clientX,a:c.a,b:c.b,w:t.parentNode.getBoundingClientRect().width,T:TT()};e.preventDefault()};
+addEventListener('pointermove',e=>{if(!vd)return;const c=clips[vd.i],dt=(e.clientX-vd.x)/vd.w*vd.T;if(vd.h=='a')c.a=Math.min(Math.max(vd.a+dt,0),c.b-.1);else c.b=Math.max(Math.min(vd.b+dt,c.d),c.a+.1);if(vd.i==ci)V.currentTime=vd.h=='a'?c.a:Math.max(c.a,c.b-.05);rl()});
+addEventListener('pointerup',()=>vd=null);
+$('#vex').onclick=()=>{if(!clips.length)return toast('Сначала загрузите видео');if(exp){exp.stop();return}if(!window.MediaRecorder||!vc.captureStream)return toast('Экспорт не поддерживается этим браузером');
+const s=vc.captureStream(30);try{aud().forEach(t=>s.addTrack(t))}catch(e){$('#vst').textContent='Звук не удалось захватить — экспорт без звука'}
+const mt=['video/webm;codecs=vp9,opus','video/webm'].find(m=>MediaRecorder.isTypeSupported(m)),ch=[];exp=new MediaRecorder(s,{mimeType:mt,videoBitsPerSecond:5e6});exp.ondataavailable=e=>e.data.size&&ch.push(e.data);
+exp.onstop=()=>{V.pause();exp=false;$('#vex').textContent='Экспорт WebM';const b=new Blob(ch,{type:'video/webm'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='video-'+Date.now()+'.webm';a.click();$('#vst').textContent='Готово: '+Math.round(b.size/1024)+' КБ';toast('Видео экспортировано')};
+pick(0,0,()=>{exp.start();V.play();$('#vex').textContent='⏹ Остановить';$('#vst').textContent='Идёт запись в реальном времени…'})};
+/* PROJECTS */
+let pF=null,aF=null;const ID={},AK=['ash','az','ar','abg','abc','abw'],NM={photo:'Фото',video:'Видео',ava:'Аватарка'};
+const DB=new Promise((ok,no)=>{try{const r=indexedDB.open('mps',1);r.onupgradeneeded=()=>r.result.createObjectStore('p',{keyPath:'id'});r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)}catch(e){no(e)}});
+const tx=async(m,f)=>{const d=await DB;return new Promise((ok,no)=>{const t=d.transaction('p',m),q=f(t.objectStore('p'));t.oncomplete=()=>ok(q&&q.result);t.onerror=t.onabort=()=>no(t.error)})};
+const th=cv=>{const t=document.createElement('canvas');t.width=240;t.height=Math.round(240*cv.height/cv.width)||150;t.getContext('2d').drawImage(cv,0,0,t.width,t.height);return t.toDataURL('image/jpeg',.7)};
+async function sv(t,data,cv){try{const id=ID[t]||(ID[t]=Date.now()),d=new Date();await tx('readwrite',s=>s.put({id,t,v:1,n:NM[t]+' '+d.toLocaleDateString('ru')+' '+d.toTimeString().slice(0,5),d:+d,th:th(cv),data}));toast('Проект сохранён в «Мои проекты»');rp()}catch(e){toast('Не удалось сохранить: '+(e.message||e))}}
+function savePhoto(){if(!img)return toast('Сначала загрузите фото');const c=document.createElement('canvas');drawP(c,320,0,1);sv('photo',{P,b:pF},c)}
+function saveAva(){if(!A.img)return toast('Сначала загрузите фото');const s={x:A.x,y:A.y};AK.forEach(k=>s[k]=$('#'+k).value);const c=document.createElement('canvas');drawA(c,240);sv('ava',{s,b:aF},c)}
+function saveVid(){if(!clips.length)return toast('Сначала загрузите видео');const srcs={};clips.forEach(c=>srcs[c.k]=c.f);sv('video',{srcs,sc:clips.map(({k,n,d,a,b})=>({k,n,d,a,b})),fl:$('#vfl').value,sp:$('#vspd').value,tx:$('#vtx').value},vc)}
+function saveCur(){const t=document.querySelector('section.show').id;({photo:savePhoto,video:saveVid,ava:saveAva}[t]||(()=>toast('Откройте студию, чтобы сохранить проект')))()}
+async function op(p){const d=p.data;if(p.t!='video'){const i=await new Promise(r=>{const m=new Image(),u=URL.createObjectURL(d.b);m.onload=()=>{r(m);URL.revokeObjectURL(u)};m.src=u});
+if(p.t=='photo'){img=i;pF=d.b;P=d.P;P.e=P.e||[];sel=-1;hist=[];fut=[];cur=JSON.stringify(P);sync()}else{A.img=i;aF=d.b;A.x=d.s.x;A.y=d.s.y;AK.forEach(k=>$('#'+k).value=d.s[k]);ra()}}
+else{const U={};for(const k in d.srcs)U[k]=URL.createObjectURL(d.srcs[k]);clips=d.sc.map(c=>({...c,u:U[c.k],f:d.srcs[c.k]}));vh=[];$('#vfl').value=d.fl;$('#vspd').value=d.sp;$('#vsp').textContent=d.sp+'×';$('#vtx').value=d.tx;pick(0)}
+ID[p.t]=p.id;go(p.t);toast('Проект открыт')}
+async function rp(){const L=await tx('readonly',s=>s.getAll()).catch(()=>[]);$('#pj').innerHTML=L&&L.length?L.sort((a,b)=>b.d-a.d).map(p=>`<div class="card" style="cursor:default"><img src="${p.th}" alt="" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px"><h3>${p.n}</h3><small>${NM[p.t]} · ${new Date(p.d).toLocaleString('ru')}</small><div class="row"><button data-o="${p.id}">Открыть</button><button data-x="${p.id}">Удалить</button></div></div>`).join(''):'<small>Пока пусто — нажмите «💾 Сохранить проект» в любой студии.</small>'}
+$('#pj').onclick=async e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.x){if(b.dataset.c!=1){b.dataset.c=1;b.textContent='Точно?';setTimeout(()=>{b.dataset.c=0;b.textContent='Удалить'},3000);return}await tx('readwrite',s=>s.delete(+b.dataset.x));rp();toast('Проект удалён')}else if(b.dataset.o){try{op(await tx('readonly',s=>s.get(+b.dataset.o)))}catch(x){toast('Проект повреждён или не открывается')}}};
+$('#psv').onclick=savePhoto;$('#asv').onclick=saveAva;$('#vsv').onclick=saveVid;rp();
+</script></body></html>
